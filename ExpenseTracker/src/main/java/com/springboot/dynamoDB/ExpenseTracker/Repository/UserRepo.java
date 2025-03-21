@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.springboot.dynamoDB.ExpenseTracker.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +16,11 @@ public class UserRepo {
     private DynamoDBMapper dynamoDBMapper;
 
     public User addUser(User user){
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(encryptedPassword);
         dynamoDBMapper.save(user);
         return user;
     }

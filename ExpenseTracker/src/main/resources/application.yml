@@ -2,8 +2,10 @@ server:
   port: 8086
 
 spring:
-  security:
-    username: user
-    password: admin
   application:
-    name=ExpenseTracker:
+    name: ExpenseTracker
+
+  security:
+    user:
+      name: user
+      password: admin
