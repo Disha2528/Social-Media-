@@ -1,0 +1,11 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: ExpenseTracker
+
+  security:
+    user:
+      name: user
+      password: admin
