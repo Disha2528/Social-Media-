@@ -16,16 +16,16 @@ public class UserDTO {
 
     private String id;
 
-    @NotBlank(message ="user.name.valid")
+    @NotBlank(message ="{user.name.valid}")
     private String name;
 
-    @Email(message = "user.email.valid")
+    @Email(message = "{user.email.valid}")
     private String email;
 
-    @Size(min = 8, max=16, message="user.password.valid")
+    @Size(min = 8, max=16, message="{user.password.valid}")
     private String password;
 
-    @Positive(message = "user.balance.valid")
+    @Positive(message = "{user.balance.valid}")
     private double balance;
 
 }

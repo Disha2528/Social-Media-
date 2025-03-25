@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryDTO {
 
-    @NotBlank(message = "user.id.valid")
+    @NotBlank(message = "{user.id.valid}")
     private String UserId;
 
-    @NotBlank(message = "category.valid")
+    @NotBlank(message = "{category.valid}")
     private String category;
 }

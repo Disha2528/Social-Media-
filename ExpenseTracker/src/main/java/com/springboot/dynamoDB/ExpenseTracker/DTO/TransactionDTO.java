@@ -20,19 +20,19 @@ public class TransactionDTO {
 
     private String userId;
 
-    @Positive(message = "transaction.amount.valid")
+    @Positive(message = "{transaction.amount.valid}")
     private double amount;
 
     @NotBlank
-    @Pattern(regexp = "income|expense", message = "transaction.type.valid")
+    @Pattern(regexp = "income|expense", message = "{transaction.type.valid}")
     private String type;
 
-    @PastOrPresent(message = "transaction.date.valid")
+    @PastOrPresent(message = "{transaction.date.valid}")
     private LocalDateTime date;
 
-    @NotBlank(message = "transaction.description.valid")
+    @NotBlank(message = "{transaction.description.valid}")
     private String Description;
 
-    @NotBlank(message = "transaction.category.valid")
+    @NotBlank(message = "{transaction.category.valid}")
     private String category;
 }
