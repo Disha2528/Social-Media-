@@ -27,9 +27,10 @@ public class UserServiceImpl implements UserService{
 
     //create
     @Override
-    public User addUser(User user){
-        userRepo.addUser(user);
-        return user;
+    public User addUser(UserDTO user){
+        User addedUser= modelMapper.map(user, User.class);
+        userRepo.addUser(addedUser);
+        return addedUser;
     }
 
     //retrieve
@@ -37,9 +38,6 @@ public class UserServiceImpl implements UserService{
     public List<User> getUsers() throws EntityNotFoundException{
 
         List<User> users= userRepo.getUsers();
-
-        if(users.isEmpty()) throw new EntityNotFoundException("Entity not found");
-
         return users;
     }
 
@@ -77,11 +75,6 @@ public class UserServiceImpl implements UserService{
         userRepo.deleteUser(exists);
 
         return exists;
-    }
-
-    @Override
-    public User getUserByEmail(String email) {
-        return userRepo.getUserByEmail(email);
     }
 
 }

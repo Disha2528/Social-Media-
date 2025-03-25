@@ -13,10 +13,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TransactionRequestDTO {
 
-    @NotBlank(message= "UserId cannot be blank")
+    @NotBlank(message= "user.id.valid")
     private String userId;
 
-    @NotNull(message = "Date cannot be null")
+    @NotNull(message = "transaction.date.valid")
     private LocalDate date;
 
 }

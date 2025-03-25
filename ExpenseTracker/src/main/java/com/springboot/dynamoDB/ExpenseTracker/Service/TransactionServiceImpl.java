@@ -36,7 +36,8 @@ public class TransactionServiceImpl implements TransactionService{
 
     //create Transaction
     @Override
-    public Transaction addTransaction(Transaction transaction){
+    public Transaction addTransaction(TransactionDTO transactionDTO){
+       Transaction transaction=  modelMapper.map(transactionDTO, Transaction.class);
 
         User user= userRepo.getUserById(transaction.getUserId());
 
@@ -47,18 +48,14 @@ public class TransactionServiceImpl implements TransactionService{
         if (transaction.getType().equalsIgnoreCase("income")) {
             currentBalance += transaction.getAmount();
         } else {
-
             if (transaction.getAmount() > currentBalance) {
                 throw new RuntimeException("Insufficient balance.");
             }
-
             currentBalance -= transaction.getAmount();
         }
 
         user.setBalance(currentBalance);
-
         UserDTO userDTO= modelMapper.map(user, UserDTO.class);
-
         userService.updateUser(user.getId(),userDTO);
 
         transationRepo.addTransaction(transaction);
@@ -71,10 +68,9 @@ public class TransactionServiceImpl implements TransactionService{
     public List<Transaction> getTransaction() throws EntityNotFoundException{
         List<Transaction> transactions= transationRepo.getTransactions();
 
-        if(transactions.isEmpty()) throw new EntityNotFoundException("Entity Not Found");
-
         return transactions;
     }
+
 
     //retrieve by user Id
     @Override
@@ -91,9 +87,6 @@ public class TransactionServiceImpl implements TransactionService{
     public List<Transaction> getTransactionByDate(TransactionRequestDTO dto) throws EntityNotFoundException{
 
         List<Transaction> transactions= transationRepo.getTransactionsByDate(dto);
-
-        if(transactions.isEmpty()) throw new EntityNotFoundException("Entity Not Found");
-
         return transactions;
 
 
@@ -102,10 +95,8 @@ public class TransactionServiceImpl implements TransactionService{
     //retrieve by category
     @Override
     public List<Transaction> getTransactionByCategory(CategoryDTO category) throws EntityNotFoundException{
+
         List<Transaction> transactions= transationRepo.getTransactionsByCategory(category);
-
-        if(transactions.isEmpty()) throw new EntityNotFoundException("Entity Not Found");
-
         return transactions;
     }
 

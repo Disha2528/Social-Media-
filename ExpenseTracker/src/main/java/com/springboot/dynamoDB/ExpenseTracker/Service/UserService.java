@@ -11,7 +11,7 @@ public interface UserService {
 
 
     //create
-    public User addUser(User user);
+    public User addUser(UserDTO user);
 
     //retrieve
     public List<User> getUsers() throws EntityNotFoundException;
@@ -27,5 +27,4 @@ public interface UserService {
     //delete
     public User deleteUser(String id) throws EntityNotFoundException;
 
-    public User getUserByEmail(String email);
 }

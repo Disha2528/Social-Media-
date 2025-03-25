@@ -19,15 +19,12 @@ public class User {
     private String id;  // Partition Key
 
     @DynamoDBAttribute(attributeName = "name")
-    @NotBlank(message = "Name cannot be blank")
     private String name;
 
     @DynamoDBIndexHashKey(globalSecondaryIndexName = "email") //GSI
-    @Email(message = "Invalid email format")
     private String email;
 
     @DynamoDBAttribute(attributeName = "password")
-    @Size(min= 8, max= 16, message = "Password must be 8 to 16 characters long")
     private String password;
 
     @DynamoDBAttribute(attributeName = "balance")

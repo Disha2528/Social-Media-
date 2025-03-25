@@ -6,6 +6,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +20,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleEmployeeNotFound(EntityNotFoundException e){
+
         ErrorDTO errorDTO= new ErrorDTO(messageSource.getMessage("entity.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(errorDTO,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDTO> handleValidationErrors(MethodArgumentNotValidException ex) {
+        String messageKey = ex.getBindingResult().getFieldError().getDefaultMessage();
+
+        String message = messageSource.getMessage(
+                messageKey,
+                null,
+                messageKey,
+                LocaleContextHolder.getLocale()
+        );
+
+        ErrorDTO errorDTO = new ErrorDTO(message, HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

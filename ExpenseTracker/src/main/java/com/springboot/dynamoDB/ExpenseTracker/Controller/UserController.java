@@ -26,10 +26,10 @@ public class UserController {
 
     //create
     @PostMapping("/add")
-    public ResponseEntity<ResponseHandler> addUser(@RequestBody @Valid User user){
-        User addedUser= userService.addUser(user);
+    public ResponseEntity<ResponseHandler> addUser(@RequestBody @Valid UserDTO user){
+        User user1=userService.addUser(user);
 
-        ResponseHandler response = new ResponseHandler(addedUser, messageSource.getMessage("user.create.success", null, LocaleContextHolder.getLocale()),
+        ResponseHandler response = new ResponseHandler(user1, messageSource.getMessage("user.create.success", null, LocaleContextHolder.getLocale()),
                 HttpStatus.OK.value(), true, "User");
 
         return ResponseEntity.ok(response);

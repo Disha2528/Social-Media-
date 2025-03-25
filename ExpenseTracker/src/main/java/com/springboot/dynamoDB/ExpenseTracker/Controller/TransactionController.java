@@ -28,9 +28,8 @@ public class TransactionController {
     @Autowired
     private MessageSource messageSource;
 
-    //add transactions
     @PostMapping("/add")
-    public ResponseEntity<ResponseHandler> addTransaction(@RequestBody @Valid Transaction transaction){
+    public ResponseEntity<ResponseHandler> addTransaction(@RequestBody @Valid TransactionDTO transaction){
 
         Transaction transaction1= transactionService.addTransaction(transaction);
 

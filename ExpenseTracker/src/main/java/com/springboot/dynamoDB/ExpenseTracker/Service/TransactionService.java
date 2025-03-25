@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface TransactionService {
     //create Transaction
-    public Transaction addTransaction(Transaction transaction) ;
+    public Transaction addTransaction(TransactionDTO transaction) ;
 
     //Retrieve all
     public List<Transaction> getTransaction() throws EntityNotFoundException;

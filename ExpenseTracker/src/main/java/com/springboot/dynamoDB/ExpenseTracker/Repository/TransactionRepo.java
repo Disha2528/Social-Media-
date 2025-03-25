@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.springboot.dynamoDB.ExpenseTracker.DTO.CategoryDTO;
 import com.springboot.dynamoDB.ExpenseTracker.DTO.TransactionRequestDTO;
 import com.springboot.dynamoDB.ExpenseTracker.Entity.Transaction;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,9 @@ public class TransactionRepo {
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     //create transaction
     public Transaction addTransaction(Transaction transaction){
         dynamoDBMapper.save(transaction);
@@ -35,12 +39,19 @@ public class TransactionRepo {
 
     //Retrieve by user Id
     public List<Transaction> getTransactionByUserId(String userId) {
-        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterExpression("userId = :userId")
-                .withExpressionAttributeValues(Map.of(":userId", new AttributeValue().withS(userId)));
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":userId", new AttributeValue().withS(userId));
 
-        return dynamoDBMapper.scan(Transaction.class, scanExpression);
+        DynamoDBQueryExpression<Transaction> queryExpression = new DynamoDBQueryExpression<Transaction>()
+                .withIndexName("userId-date-index") // Use GSI
+                .withKeyConditionExpression("userId = :userId")
+                .withExpressionAttributeValues(eav)
+                .withConsistentRead(false);
+
+        return dynamoDBMapper.query(Transaction.class, queryExpression);
     }
+
+ //--key conditions
 
     //retrieve by Transaction id
     public Transaction getTransactionById(String transactionId){
