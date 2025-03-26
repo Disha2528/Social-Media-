@@ -29,8 +29,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("login","register").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/transaction/**").authenticated()
+                        .anyRequest().permitAll()
                 );
         http.formLogin(Customizer.withDefaults()); //for url login
         http.httpBasic(Customizer.withDefaults()); //for logging in from postman

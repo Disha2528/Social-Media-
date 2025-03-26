@@ -1,5 +1,6 @@
 package com.springboot.dynamoDB.ExpenseTracker.Service;
 
+import com.springboot.dynamoDB.ExpenseTracker.DTO.LoginDTO;
 import com.springboot.dynamoDB.ExpenseTracker.DTO.UserDTO;
 import com.springboot.dynamoDB.ExpenseTracker.Entity.User;
 import com.springboot.dynamoDB.ExpenseTracker.Exceptions.EntityNotFoundException;
@@ -11,6 +12,9 @@ public interface UserService {
 
     //create
     public User addUser(User user);
+
+    //login
+    public String login(LoginDTO loginDTO);
 
     //retrieve
     public List<User> getUsers() throws EntityNotFoundException;
