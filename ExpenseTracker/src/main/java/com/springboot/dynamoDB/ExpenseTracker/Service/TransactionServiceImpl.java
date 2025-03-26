@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -36,7 +37,8 @@ public class TransactionServiceImpl implements TransactionService{
 
     //create Transaction
     @Override
-    public Transaction addTransaction(TransactionDTO transactionDTO){
+    public Transaction addTransaction(TransactionDTO transactionDTO, Principal principal){
+        transactionDTO.setUserId(principal.getName());
        Transaction transaction=  modelMapper.map(transactionDTO, Transaction.class);
 
         User user= userRepo.getUserById(transaction.getUserId());
@@ -65,8 +67,8 @@ public class TransactionServiceImpl implements TransactionService{
 
     //Retrieve all
     @Override
-    public List<Transaction> getTransaction() throws EntityNotFoundException{
-        List<Transaction> transactions= transationRepo.getTransactions();
+    public List<Transaction> getTransaction(Principal principal) throws EntityNotFoundException{
+        List<Transaction> transactions= transationRepo.getTransactions(principal.getName());
 
         return transactions;
     }
@@ -84,8 +86,8 @@ public class TransactionServiceImpl implements TransactionService{
 
     //retrieve by date
     @Override
-    public List<Transaction> getTransactionByDate(TransactionRequestDTO dto) throws EntityNotFoundException{
-
+    public List<Transaction> getTransactionByDate(TransactionRequestDTO dto, Principal principal) throws EntityNotFoundException{
+        dto.setUserId(principal.getName());
         List<Transaction> transactions= transationRepo.getTransactionsByDate(dto);
         return transactions;
 
@@ -94,16 +96,19 @@ public class TransactionServiceImpl implements TransactionService{
 
     //retrieve by category
     @Override
-    public List<Transaction> getTransactionByCategory(CategoryDTO category) throws EntityNotFoundException{
-
+    public List<Transaction> getTransactionByCategory(CategoryDTO category, Principal principal) throws EntityNotFoundException{
+        category.setUserId(principal.getName());
         List<Transaction> transactions= transationRepo.getTransactionsByCategory(category);
         return transactions;
     }
 
     //update
     @Override
-    public Transaction updateTransaction(String id, TransactionDTO transactionDTO) throws EntityNotFoundException{
+    public Transaction updateTransaction(String id, TransactionDTO transactionDTO, Principal principal) throws EntityNotFoundException{
         Transaction transaction= transationRepo.getTransactionById(id);
+        if (!transaction.getUserId().equals(principal.getName())) {
+            throw new EntityNotFoundException("Entity Not Found");
+        }
 
         if(transaction==null) throw new EntityNotFoundException("Entity Not Found");
 
@@ -116,10 +121,11 @@ public class TransactionServiceImpl implements TransactionService{
 
     //delete
     @Override
-    public Transaction deleteTransaction(String id) throws EntityNotFoundException{
+    public Transaction deleteTransaction(String id, Principal principal) throws EntityNotFoundException{
+
         Transaction transaction= transationRepo.getTransactionById(id);
 
-        if(transaction==null) throw new EntityNotFoundException("Entity Not Found");
+        if(transaction==null || transaction.getUserId()!=principal.getName()) throw new EntityNotFoundException("Entity Not Found");
 
         transationRepo.delete(transaction);
 

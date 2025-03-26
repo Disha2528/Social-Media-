@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDTO> handleException(Exception ex){
-        ErrorDTO errorDTO= new ErrorDTO("Error occured", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        ErrorDTO errorDTO= new ErrorDTO(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(errorDTO,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

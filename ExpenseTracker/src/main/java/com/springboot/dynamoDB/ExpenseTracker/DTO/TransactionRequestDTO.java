@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TransactionRequestDTO {
 
-    @NotBlank(message= "{user.id.valid}")
+
     private String userId;
 
     @NotNull(message = "{transaction.date.valid}")

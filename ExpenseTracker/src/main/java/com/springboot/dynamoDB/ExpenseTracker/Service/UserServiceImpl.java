@@ -1,12 +1,17 @@
 package com.springboot.dynamoDB.ExpenseTracker.Service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.springboot.dynamoDB.ExpenseTracker.DTO.LoginDTO;
 import com.springboot.dynamoDB.ExpenseTracker.DTO.UserDTO;
 import com.springboot.dynamoDB.ExpenseTracker.Entity.User;
 import com.springboot.dynamoDB.ExpenseTracker.Exceptions.EntityNotFoundException;
 import com.springboot.dynamoDB.ExpenseTracker.Repository.UserRepo;
+import com.springboot.dynamoDB.ExpenseTracker.Util.JwtUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +28,14 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private DynamoDBMapper mapper;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private CustomUserDetailService userDetailService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     //create
@@ -77,4 +90,12 @@ public class UserServiceImpl implements UserService{
         return exists;
     }
 
+    @Override
+    public String login(LoginDTO loginDTO){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDTO.getUserId(), loginDTO.getPassword()));
+        UserDetails userDetails= userDetailService.loadUserByUsername(loginDTO.getUserId());
+        return jwtUtil.generateToken(userDetails.getUsername());
+
+    }
 }

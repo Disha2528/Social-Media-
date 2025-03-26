@@ -33,8 +33,17 @@ public class TransactionRepo {
     }
 
     //retrieve all
-    public List<Transaction> getTransactions(){
-        return dynamoDBMapper.scan(Transaction.class, new DynamoDBScanExpression());
+    public List<Transaction> getTransactions(String userId){
+        Map<String, AttributeValue> eav = new HashMap<>();
+        eav.put(":userId", new AttributeValue().withS(userId));
+
+        DynamoDBQueryExpression<Transaction> queryExpression = new DynamoDBQueryExpression<Transaction>()
+                .withIndexName("userId-date-index") // Use GSI
+                .withKeyConditionExpression("userId = :userId")
+                .withExpressionAttributeValues(eav)
+                .withConsistentRead(false);
+
+        return dynamoDBMapper.query(Transaction.class, queryExpression);
     }
 
     //Retrieve by user Id

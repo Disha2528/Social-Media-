@@ -20,7 +20,7 @@ public class TransactionDTO {
 
     private String userId;
 
-    @Positive(message = "{transaction.amount.valid}")
+    @Positive(message = "transaction.amount.valid")
     private double amount;
 
     @NotBlank

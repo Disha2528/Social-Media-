@@ -1,5 +1,6 @@
 package com.springboot.dynamoDB.ExpenseTracker.Controller;
 
+import com.springboot.dynamoDB.ExpenseTracker.DTO.LoginDTO;
 import com.springboot.dynamoDB.ExpenseTracker.DTO.UserDTO;
 import com.springboot.dynamoDB.ExpenseTracker.Entity.User;
 import com.springboot.dynamoDB.ExpenseTracker.Service.UserService;
@@ -25,7 +26,7 @@ public class UserController {
     private MessageSource messageSource;
 
     //create
-    @PostMapping("/add")
+    @PostMapping("/register")
     public ResponseEntity<ResponseHandler> addUser(@RequestBody @Valid UserDTO user){
         User user1=userService.addUser(user);
 
@@ -35,6 +36,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+
     //retrieve
     @GetMapping("/users")
     public ResponseEntity<ResponseHandler> getUsers(){
@@ -42,6 +44,14 @@ public class UserController {
         ResponseHandler response = new ResponseHandler(users, messageSource.getMessage("users.get.success", null, LocaleContextHolder.getLocale()),
                 HttpStatus.OK.value(), true, "Users");
 
+        return ResponseEntity.ok(response);
+    }
+
+    //login
+    @PostMapping("/login")
+    public ResponseEntity<ResponseHandler> loginUser(@Valid @RequestBody LoginDTO loginDTO){
+
+        ResponseHandler response = new ResponseHandler(userService.login(loginDTO), messageSource.getMessage("login.successfull", null, LocaleContextHolder.getLocale()), HttpStatus.OK.value(), true, "User");
         return ResponseEntity.ok(response);
     }
 

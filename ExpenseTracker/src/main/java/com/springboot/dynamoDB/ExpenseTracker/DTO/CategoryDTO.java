@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryDTO {
 
-    @NotBlank(message = "{user.id.valid}")
     private String UserId;
 
     @NotBlank(message = "{category.valid}")
