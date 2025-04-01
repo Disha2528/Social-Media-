@@ -44,7 +44,7 @@ public class AnswerController {
 
     @GetMapping("/get/{discussionId}")
     public ResponseEntity<ResponseHandler> getAnswer(@PathVariable @Valid String discussionId, @RequestParam(defaultValue = "3") int limit,
-                                                     @RequestParam(required = false) String lastEvaluatedKey)throws EntityNotFoundException {
+                                                     @RequestParam(required = false) String lastEvaluatedKey) {
 
         try {
             PaginatedResult<Answer> answer= answerService.getAnswer(discussionId,limit,lastEvaluatedKey);
@@ -61,7 +61,7 @@ public class AnswerController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseHandler> updateAnswer(@Validated(OnUpdate.class) @RequestBody AnswerDTO answerDTO) throws EntityNotFoundException{
+    public ResponseEntity<ResponseHandler> updateAnswer(@Validated(OnUpdate.class) @RequestBody AnswerDTO answerDTO) {
 
         try{
             Answer answer=answerService.updateAnswer(answerDTO);
@@ -78,7 +78,7 @@ public class AnswerController {
     }
 
     @DeleteMapping("/delete/{answerId}")
-    public ResponseEntity<ResponseHandler> deleteAnswer(@Valid @RequestParam String answerId) throws EntityNotFoundException {
+    public ResponseEntity<ResponseHandler> deleteAnswer(@Valid @RequestParam String answerId) {
 
         try {
             Answer answer= answerService.deleteAnswer(answerId);

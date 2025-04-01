@@ -22,11 +22,11 @@ public class UserDTO {
     @NotBlank(groups = OnCreate.class, message = "{user.name.invalid}")
     private String name;
 
-    @NotBlank(groups = {OnCreate.class, OnLogin.class, OnUpdate.class}, message = "{user.email.invalid}")
+    @NotBlank(groups = {OnCreate.class, OnLogin.class}, message = "{user.email.invalid}")
     @Email
     private String email;
 
-    @NotBlank(groups = {OnCreate.class, OnLogin.class, OnUpdate.class}, message = "{user.password.invalid}")
+    @NotBlank(groups = {OnCreate.class, OnLogin.class}, message = "{user.password.invalid}")
     private String password;
 
     @NotNull(groups = OnCreate.class, message = "{user.role.invalid}")

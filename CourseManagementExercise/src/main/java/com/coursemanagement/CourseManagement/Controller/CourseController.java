@@ -69,7 +69,7 @@ public class CourseController {
 
     @GetMapping("/courseByInstructor/{id}")
     public ResponseEntity<ResponseHandler> courseByInstructor(
-            @Valid @PathVariable String id) throws EntityNotFoundException {
+            @Valid @PathVariable String id) {
 
         try {
             List<Course> course= courseService.courseByInstructor(id);
@@ -86,7 +86,7 @@ public class CourseController {
 
 
     @PutMapping("/updateCourse")
-    public ResponseEntity<ResponseHandler> updateCourse(@RequestBody @Validated(OnUpdate.class) CourseDTO courseDTO) throws EntityNotFoundException {
+    public ResponseEntity<ResponseHandler> updateCourse(@RequestBody @Validated(OnUpdate.class) CourseDTO courseDTO) {
 
         try {
             authUtil.ensureInstructor();
@@ -104,7 +104,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/deleteCourse/{id}")
-    public ResponseEntity<ResponseHandler> deleteCourse(@Valid @PathVariable String id) throws AccessDeniedException, EntityNotFoundException {
+    public ResponseEntity<ResponseHandler> deleteCourse(@Valid @PathVariable String id) {
 
         try {
             authUtil.ensureInstructor();

@@ -1,7 +1,6 @@
 package com.coursemanagement.CourseManagement.Controller;
 
 import com.coursemanagement.CourseManagement.DTO.UserDTO;
-import com.coursemanagement.CourseManagement.Entity.User;
 import com.coursemanagement.CourseManagement.Exception.BadRequestException;
 import com.coursemanagement.CourseManagement.Exception.EntityNotFoundException;
 import com.coursemanagement.CourseManagement.Service.UserService;
@@ -9,16 +8,12 @@ import com.coursemanagement.CourseManagement.Util.MessageUtil;
 import com.coursemanagement.CourseManagement.Util.ResponseHandler;
 import com.coursemanagement.CourseManagement.group.OnCreate;
 import com.coursemanagement.CourseManagement.group.OnLogin;
-import com.coursemanagement.CourseManagement.group.OnUpdate;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.AccessDeniedException;
 
 @RestController
 @RequestMapping("/user")
