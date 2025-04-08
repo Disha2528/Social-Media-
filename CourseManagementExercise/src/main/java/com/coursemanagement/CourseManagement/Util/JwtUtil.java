@@ -54,9 +54,12 @@ public class JwtUtil {
     // Generate token
     public String generateToken(String id, Role role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role.name());
+        claims.put("role", role.name()); // Adding user role as a claim
+        claims.put("issuedAt", new Date()); // Optional: Token issued timestamp
+
         return createToken(claims, id);
     }
+
 
     // create the token
     private String createToken(Map<String, Object> claims, String subject) {

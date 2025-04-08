@@ -29,7 +29,7 @@ public class CourseController {
     private MessageUtil messageUtil;
 
     @PostMapping("/addCourse")
-    public ResponseEntity<ResponseHandler> addCourse(@RequestBody @Validated(OnCreate.class) CourseDTO courseDTO) throws AccessDeniedException {
+    public ResponseEntity<ResponseHandler> addCourse(@RequestBody @Validated(OnCreate.class) CourseDTO courseDTO) {
 
         try {
             ResponseHandler response = new ResponseHandler(messageUtil.getMessage("course.create.success"), HttpStatus.OK.value(), true, "Course", courseService.addCourse(courseDTO));
@@ -45,7 +45,7 @@ public class CourseController {
     }
 
     @GetMapping("/courses")
-    public ResponseEntity<ResponseHandler> getCourses() throws AccessDeniedException {
+    public ResponseEntity<ResponseHandler> getCourses() {
 
         try {
             ResponseHandler response = new ResponseHandler(messageUtil.getMessage("course.get.success"), HttpStatus.OK.value(), true, "Course", courseService.getCourses());
@@ -62,7 +62,7 @@ public class CourseController {
 
     @GetMapping("/courseByInstructor/{id}")
     public ResponseEntity<ResponseHandler> courseByInstructor(
-            @Valid @PathVariable String id) throws AccessDeniedException, EntityNotFoundException {
+            @Valid @PathVariable String id) {
 
         try {
             ResponseHandler response = new ResponseHandler(messageUtil.getMessage("course.get.success"), HttpStatus.OK.value(), true, "Course", courseService.courseByInstructor(id));
@@ -81,7 +81,7 @@ public class CourseController {
 
 
     @PutMapping("/updateCourse")
-    public ResponseEntity<ResponseHandler> updateCourse(@RequestBody @Validated(OnUpdate.class) CourseDTO courseDTO) throws AccessDeniedException, EntityNotFoundException {
+    public ResponseEntity<ResponseHandler> updateCourse(@RequestBody @Validated(OnUpdate.class) CourseDTO courseDTO) {
 
         try {
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("course.update.success"), HttpStatus.OK.value(), true, "Course", courseService.updateCourse(courseDTO));
@@ -100,7 +100,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/deleteCourse/{id}")
-    public ResponseEntity<ResponseHandler> deleteCourse(@Valid @PathVariable String id) throws AccessDeniedException, EntityNotFoundException {
+    public ResponseEntity<ResponseHandler> deleteCourse(@Valid @PathVariable String id) {
 
         try {
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("course.delete.success"), HttpStatus.OK.value(), true, "Course", courseService.deleteCourse(id));

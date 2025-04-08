@@ -34,7 +34,7 @@ public class EnrollmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
             ResponseHandler response = new ResponseHandler(messageUtil.getMessage("enrollment.create.fail"), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Enrollment", null);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

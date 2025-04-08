@@ -27,7 +27,7 @@ public class Answer {
     @DynamoDBAttribute(attributeName = "answerText")
     private String answerText;
 
-    @DynamoDBAttribute( attributeName = "answeredAt") //GSI sortKey
+    @DynamoDBAttribute( attributeName = "answeredAt")
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
     private LocalDateTime answeredAt;
 }

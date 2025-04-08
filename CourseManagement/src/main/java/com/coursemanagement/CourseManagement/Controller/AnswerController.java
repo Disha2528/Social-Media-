@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/answer")
 public class AnswerController {
@@ -25,63 +24,55 @@ public class AnswerController {
     private MessageUtil messageUtil;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseHandler> createAnswer(@Validated(OnCreate.class) @RequestBody AnswerDTO answerDTO){
-
-            try{
-                ResponseHandler response=new ResponseHandler(messageUtil.getMessage("answer.create.success") , HttpStatus.OK.value(),true, "Answer", answerService.createAnswer(answerDTO));
-                return ResponseEntity.ok(response);
-            } catch (Exception e) {
-                ResponseHandler response=new ResponseHandler(messageUtil.getMessage("answer.create.fail") , HttpStatus.INTERNAL_SERVER_ERROR.value(),false,"Answer", null);
-                return ResponseEntity.ok(response);
-            }
+    public ResponseEntity<ResponseHandler> createAnswer(@Validated(OnCreate.class) @RequestBody AnswerDTO answerDTO) {
+        try {
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("answer.create.success"), HttpStatus.OK.value(), true, "Answer", answerService.createAnswer(answerDTO));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("answer.create.fail"), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Answer", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @GetMapping("/get/{discussionId}")
-    public ResponseEntity<ResponseHandler> getAnswer(@PathVariable @Valid String discussionId)throws EntityNotFoundException {
-
+    public ResponseEntity<ResponseHandler> getAnswer(@PathVariable @Valid String discussionId) {
         try {
             ResponseHandler response = new ResponseHandler(messageUtil.getMessage("answer.get.success"), HttpStatus.OK.value(), true, "Answer", answerService.getAnswer(discussionId));
             return ResponseEntity.ok(response);
-        }catch (EntityNotFoundException e){
-            ResponseHandler response=new ResponseHandler(e.getMessage() , HttpStatus.BAD_REQUEST.value(),false,"Discussion", null);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }catch (Exception e) {
-            ResponseHandler response=new ResponseHandler(messageUtil.getMessage("answer.get.fail"), HttpStatus.INTERNAL_SERVER_ERROR.value(),false,"Answer", null);
-            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            ResponseHandler response = new ResponseHandler(e.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Discussion", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("answer.get.fail"), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Answer", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseHandler> updateAnswer(@Validated(OnUpdate.class) @RequestBody AnswerDTO answerDTO) throws EntityNotFoundException{
-
-        try{
-            ResponseHandler response=new ResponseHandler(messageUtil.getMessage("answer.update.success") , HttpStatus.OK.value(),true, "Answer", answerService.updateAnswer(answerDTO));
+    public ResponseEntity<ResponseHandler> updateAnswer(@Validated(OnUpdate.class) @RequestBody AnswerDTO answerDTO) {
+        try {
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("answer.update.success"), HttpStatus.OK.value(), true, "Answer", answerService.updateAnswer(answerDTO));
             return ResponseEntity.ok(response);
-        }catch (EntityNotFoundException e) {
-            ResponseHandler response = new ResponseHandler(e.getMessage(), HttpStatus.BAD_REQUEST.value(), false, "Discussion", null);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }catch (Exception e) {
-            ResponseHandler response=new ResponseHandler(messageUtil.getMessage("answer.update.fail") , HttpStatus.INTERNAL_SERVER_ERROR.value(),false,"Answer", null);
-            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            ResponseHandler response = new ResponseHandler(e.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Discussion", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("answer.update.fail"), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Answer", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
     }
 
     @DeleteMapping("/delete/{answerId}")
-    public ResponseEntity<ResponseHandler> deleteAnswer(@Valid @RequestParam String answerId) throws EntityNotFoundException {
-
+    public ResponseEntity<ResponseHandler> deleteAnswer(@Valid @RequestParam String answerId) {
         try {
             ResponseHandler response = new ResponseHandler(messageUtil.getMessage("answer.delete.success"), HttpStatus.OK.value(), true, "Answer", answerService.deleteAnswer(answerId));
             return ResponseEntity.ok(response);
-        }catch (EntityNotFoundException e){
-            ResponseHandler response=new ResponseHandler(e.getMessage() , HttpStatus.BAD_REQUEST.value(),false,"Discussion", null);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }catch (Exception e) {
-            ResponseHandler response=new ResponseHandler(messageUtil.getMessage("answer.delete.fail") , HttpStatus.INTERNAL_SERVER_ERROR.value(),false,"Answer", null);
-            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            ResponseHandler response = new ResponseHandler(e.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Discussion", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("answer.delete.fail"), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Answer", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
     }
-
 }

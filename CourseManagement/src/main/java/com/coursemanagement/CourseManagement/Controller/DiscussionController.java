@@ -48,7 +48,7 @@ public class DiscussionController {
     }
 
     @GetMapping("/getDiscussion/{id}")
-    public ResponseEntity<ResponseHandler> getDiscussionsByCourseId(@Valid @PathVariable String id) throws EntityNotFoundException {
+    public ResponseEntity<ResponseHandler> getDiscussionsByCourseId(@Valid @PathVariable String id) {
 
         try {
             ResponseHandler response = new ResponseHandler(messageUtil.getMessage("discussion.get.success"), HttpStatus.OK.value(), true, "Discussion", discussionService.getDiscussionsByCourseId(id));
