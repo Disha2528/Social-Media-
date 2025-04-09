@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO update(UserDTO userDTO) throws EntityNotFoundException {
+    public UserDTO update(UserDTO userDTO) throws EntityNotFoundException, IOException {
 
 
         if(userDTO.getPassword()!=null){
@@ -88,6 +88,10 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepo.getUserByUsername(authUtil.getCurrentUser());
         if(user == null) throw new EntityNotFoundException("User Not Found");
+        if (userDTO.getPfpPath() != null && userDTO.getPfpName() != null) {
+            fileStorageService.storePfp(userDTO.getUserName(), userDTO.getPfpPath(), userDTO.getPfpName());
+            userDTO.setPfpPath(userDTO.getUserName());
+        }
         modelMapper.map(userDTO,user);
         User user1 = userRepo.update(user);
         UserDTO userdto= modelMapper.map(user1, UserDTO.class);

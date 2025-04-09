@@ -13,6 +13,6 @@ public interface UserService {
 
     public String login(UserDTO userDTO);
 
-    public UserDTO update(UserDTO userDTO) throws EntityNotFoundException;
+    public UserDTO update(UserDTO userDTO) throws EntityNotFoundException, IOException;
 
 }
