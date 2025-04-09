@@ -27,9 +27,7 @@ public class RequestRepo {
     @Autowired
     private AuthenticatedUserUtil authUtil;
 
-    public Request createRequest(RequestDTO requestDTO){
-        Request request= modelMapper.map(requestDTO, Request.class);
-        System.out.println(request);
+    public Request createRequest(Request request){
         dynamoDBMapper.save(request);
         return  request;
     }
@@ -40,14 +38,13 @@ public class RequestRepo {
         return request;
     }
 
-    //get all requests pagination
     public QueryResultPage<Request> getRequestsByReceiverId(String receiverId, int limit, Map<String, AttributeValue> startKey) {
         Map<String, AttributeValue> values = new HashMap<>();
         values.put(":receiverId", new AttributeValue().withS(receiverId));
 
         DynamoDBQueryExpression<Request> query = new DynamoDBQueryExpression<Request>()
                 .withIndexName("receiverIdIndex")
-                .withConsistentRead(false) // must be false for GSIs
+                .withConsistentRead(false)
                 .withKeyConditionExpression("receiverId = :receiverId")
                 .withExpressionAttributeValues(values)
                 .withLimit(limit);

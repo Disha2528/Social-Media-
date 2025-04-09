@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface CommentService {
-    public Comment addComment(CommentDTO commentDTO);
+    public CommentDTO addComment(CommentDTO commentDTO) throws EntityNotFoundException;
 
-    public Comment removeComment(String commentId);
+    public CommentDTO removeComment(String commentId) throws EntityNotFoundException;
 
-    public PaginatedResult<Comment> getComments(String postId, int limit, String lastEvaluatedKey);
+    public PaginatedResult<CommentDTO> getComments(String postId, int limit, String lastEvaluatedKey) throws EntityNotFoundException;
 
-    public Comment updateComment(CommentDTO commentDTO) throws EntityNotFoundException;
+    public CommentDTO updateComment(CommentDTO commentDTO) throws EntityNotFoundException;
 }

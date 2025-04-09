@@ -26,20 +26,12 @@ public class LikeRepo {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Like addLike(Like like){
-        Post post= dynamoDBMapper.load(Post.class, like.getPostId());
-        post.setLikes(post.getLikes()+1);
+    public void addLike(Like like){
         dynamoDBMapper.save(like);
-        dynamoDBMapper.save(post);
-        return like;
     }
 
-    public Like removeLike(String postId){
-        Like like= dynamoDBMapper.load(Like.class, postId, authUtil.getCurrentUser());
-        Post post= dynamoDBMapper.load(Post.class,postId);
-        post.setLikes(post.getLikes()-1);
+    public void removeLike(Like like){
         dynamoDBMapper.delete(like);
-        return like;
     }
 
     public QueryResultPage<Like> getLikes(String postId, int limit, Map<String,AttributeValue> exclusiveStartKey){
@@ -56,5 +48,9 @@ public class LikeRepo {
         }
 
         return dynamoDBMapper.queryPage(Like.class, queryExpression);
+    }
+
+    public Like getLike(String userId, String postId){
+        return dynamoDBMapper.load(Like.class, userId, postId);
     }
 }

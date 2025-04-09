@@ -6,6 +6,7 @@ import com.SocialMedia.SocialMedia.Exceptions.EntityAlreadyExistsException;
 import com.SocialMedia.SocialMedia.Exceptions.EntityNotFoundException;
 import com.SocialMedia.SocialMedia.Repository.UserRepo;
 import com.SocialMedia.SocialMedia.Util.AuthenticatedUserUtil;
+import com.SocialMedia.SocialMedia.Util.FileStorageService;
 import com.SocialMedia.SocialMedia.Util.JwtUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,8 +40,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private FileStorageService fileStorageService;
+
     @Override
-    public User registerUser(UserDTO userDTO) {
+    public UserDTO registerUser(UserDTO userDTO) throws IOException {
        if( userRepo.getUserByUsername(userDTO.getUserName()) !=null){
            throw new EntityAlreadyExistsException("Account with this userName already Exists");
        }
@@ -46,8 +52,15 @@ public class UserServiceImpl implements UserService {
        if(!userRepo.getUserByEmail(userDTO.getEmail()).isEmpty()){
            throw new EntityAlreadyExistsException("Account with this email already exists");
        }
-        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        return userRepo.register(userDTO);
+       userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        if (userDTO.getPfpPath() != null && userDTO.getPfpName() != null) {
+            fileStorageService.storePfp(userDTO.getUserName(), userDTO.getPfpPath(), userDTO.getPfpName());
+            userDTO.setPfpPath(userDTO.getUserName());
+        }
+       User user= modelMapper.map(userDTO, User.class);
+       userRepo.save(user);
+       UserDTO userdto= modelMapper.map(user,UserDTO.class);
+       return userdto;
     }
 
     @Override
@@ -66,7 +79,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(UserDTO userDTO) throws EntityNotFoundException {
+    public UserDTO update(UserDTO userDTO) throws EntityNotFoundException {
+
 
         if(userDTO.getPassword()!=null){
             userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -75,7 +89,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.getUserByUsername(authUtil.getCurrentUser());
         if(user == null) throw new EntityNotFoundException("User Not Found");
         modelMapper.map(userDTO,user);
-        return userRepo.update(user);
+        User user1 = userRepo.update(user);
+        UserDTO userdto= modelMapper.map(user1, UserDTO.class);
+        return userdto;
     }
 
 

@@ -19,8 +19,8 @@ public class JwtUtil {
 
 
     public JwtUtil(@Value("${jwt.secret}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey); // Decode Base64 secret
-        this.key = Keys.hmacShaKeyFor(keyBytes); // Generate a proper key
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
 
@@ -28,12 +28,12 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours expiry
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Validate JWT Token
+
     public boolean validateToken(String token, String username) {
         try {
             String extractedUsername = extractUsername(token);
@@ -43,23 +43,23 @@ public class JwtUtil {
         }
     }
 
-    // Extract Username from Token
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // Extract Expiration Date from Token
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // Generic method to extract claims
+
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    // Extract all claims from JWT
+
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key) // Use the proper key
@@ -68,7 +68,7 @@ public class JwtUtil {
                 .getBody();
     }
 
-    // Check if token is expired
+
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }

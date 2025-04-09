@@ -2,13 +2,16 @@ package com.SocialMedia.SocialMedia.Controller;
 
 import com.SocialMedia.SocialMedia.DTO.UserDTO;
 import com.SocialMedia.SocialMedia.Entities.User;
+import com.SocialMedia.SocialMedia.Exceptions.EntityAlreadyExistsException;
 import com.SocialMedia.SocialMedia.Groups.*;
 import com.SocialMedia.SocialMedia.Service.UserService;
 import com.SocialMedia.SocialMedia.Util.MessageUtil;
 import com.SocialMedia.SocialMedia.Util.ResponseHandler;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,15 +29,16 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<ResponseHandler> registerUser(@RequestBody @Validated(OnCreate.class) UserDTO userDTO){
         try{
-            User user=userService.registerUser(userDTO);
+            UserDTO user=userService.registerUser(userDTO);
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("user.register.success"), HttpStatus.OK.value(), true, "User",user);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        } catch (EntityAlreadyExistsException ex){
+            ResponseHandler response= new ResponseHandler(ex.getMessage(), HttpStatus.CONFLICT.value(), false, "User",null);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }catch (Exception e) {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "User",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
-
     }
 
     @PostMapping("/login")
@@ -47,7 +51,6 @@ public class UserController {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "User",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
     }
 
     @PutMapping("/update/password")

@@ -1,7 +1,9 @@
 package com.SocialMedia.SocialMedia.Controller;
 
+import com.SocialMedia.SocialMedia.DTO.FriendDTO;
 import com.SocialMedia.SocialMedia.Entities.Friend;
 import com.SocialMedia.SocialMedia.Entities.Post;
+import com.SocialMedia.SocialMedia.Exceptions.EntityNotFoundException;
 import com.SocialMedia.SocialMedia.Service.FriendService;
 import com.SocialMedia.SocialMedia.Util.MessageUtil;
 import com.SocialMedia.SocialMedia.Util.PaginatedResult;
@@ -39,10 +41,13 @@ public class FriendController {
     @DeleteMapping("/removeFriend/{friendName}")
     public ResponseEntity<ResponseHandler> removeFriend(@PathVariable @Valid String friendName){
         try{
-            Friend friend= friendService.unfriend(friendName);
+            FriendDTO friend= friendService.unfriend(friendName);
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("friend.delete.success"), HttpStatus.OK.value(), true, "Friend",friend);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        }catch (EntityNotFoundException ex) {
+            ResponseHandler response = new ResponseHandler(ex.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Friend", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }catch (Exception e) {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.OK.value(), true, "Friend",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }

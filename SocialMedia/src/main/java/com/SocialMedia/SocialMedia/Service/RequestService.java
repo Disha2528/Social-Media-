@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface RequestService {
-    public Request sendRequest(RequestDTO requestDTO) throws EntityNotFoundException;
+    public RequestDTO sendRequest(RequestDTO requestDTO) throws EntityNotFoundException;
 
-    public Request withdrawRequest(String receiverId);
+    public RequestDTO withdrawRequest(String receiverId) throws EntityNotFoundException;
 
     public  PaginatedResult<Request> viewRequests(int limit, String lastEvaluatedKey);
 
-    public Request resolveRequest(String senderId, Status status);
+    public RequestDTO resolveRequest(String senderId, Status status) throws EntityNotFoundException;
 }

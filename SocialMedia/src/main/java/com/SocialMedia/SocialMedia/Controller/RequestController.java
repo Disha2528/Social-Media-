@@ -2,6 +2,8 @@ package com.SocialMedia.SocialMedia.Controller;
 
 import com.SocialMedia.SocialMedia.DTO.RequestDTO;
 import com.SocialMedia.SocialMedia.Entities.Request;
+import com.SocialMedia.SocialMedia.Exceptions.EntityAlreadyExistsException;
+import com.SocialMedia.SocialMedia.Exceptions.EntityNotFoundException;
 import com.SocialMedia.SocialMedia.Groups.OnCreate;
 import com.SocialMedia.SocialMedia.Service.RequestService;
 import com.SocialMedia.SocialMedia.Static.Status;
@@ -29,20 +31,26 @@ public class RequestController {
     @Autowired
     private AuthenticatedUserUtil authUtil;
 
-
+    //works
     @PostMapping("/send")
     public ResponseEntity<ResponseHandler> sendRequest(@RequestBody @Validated(OnCreate.class) RequestDTO requestDTO){
         try{
-            Request request= requestService.sendRequest(requestDTO);
+            RequestDTO request= requestService.sendRequest(requestDTO);
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("request.send.success"), HttpStatus.OK.value(), true, "Request",request);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        }catch (EntityNotFoundException ex) {
+            ResponseHandler response = new ResponseHandler(ex.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Request", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }catch(EntityAlreadyExistsException ex){
+            ResponseHandler response = new ResponseHandler(ex.getMessage(), HttpStatus.CONFLICT.value(), false, "Request", null);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }catch (Exception e) {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Request",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-
+    //works
     @GetMapping("/viewRequests")
     public ResponseEntity<ResponseHandler> viewRequests(@RequestParam(defaultValue = "3") int limit, @RequestParam(required = false) String lastEvaluatedKey){
         try{
@@ -59,9 +67,12 @@ public class RequestController {
     @DeleteMapping("/withdrawRequest/{receiverId}")
     public ResponseEntity<ResponseHandler> withdrawRequest(@PathVariable @Valid String receiverId){
         try{
-            Request request= requestService.withdrawRequest(receiverId);
+            RequestDTO request= requestService.withdrawRequest(receiverId);
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("request.withdraw.success"), HttpStatus.OK.value(), true, "Request",request);
             return ResponseEntity.ok(response);
+        }catch (EntityNotFoundException ex) {
+            ResponseHandler response = new ResponseHandler(ex.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Comment", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Request",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -74,26 +85,15 @@ public class RequestController {
             @PathVariable @Valid String senderId,
             @RequestParam Status status) {
         try {
-            Request resolvedRequest = requestService.resolveRequest(senderId, status);
-
-            ResponseHandler response = new ResponseHandler(
-                    messageUtil.getMessage("request.resolve.success"),
-                    HttpStatus.OK.value(),
-                    true,
-                    "Request",
-                    resolvedRequest
-            );
-
+            RequestDTO resolvedRequest = requestService.resolveRequest(senderId, status);
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("request.resolve.success"), HttpStatus.OK.value(), true, "Request", resolvedRequest);
             return ResponseEntity.ok(response);
+        }catch (EntityNotFoundException ex) {
+            ResponseHandler response = new ResponseHandler(ex.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Comment", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
             ResponseHandler response = new ResponseHandler(
-                    e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    false,
-                    "Request",
-                    null
-            );
-
+                    e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Request", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

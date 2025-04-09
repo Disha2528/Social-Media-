@@ -2,16 +2,21 @@ package com.SocialMedia.SocialMedia.Service;
 
 import com.SocialMedia.SocialMedia.DTO.PostDTO;
 import com.SocialMedia.SocialMedia.Entities.Post;
+import com.SocialMedia.SocialMedia.Entities.User;
+import com.SocialMedia.SocialMedia.Exceptions.EntityNotFoundException;
 import com.SocialMedia.SocialMedia.Repository.PostRepo;
 import com.SocialMedia.SocialMedia.Repository.UserRepo;
-import com.SocialMedia.SocialMedia.Util.AuthenticatedUserProvider;
 import com.SocialMedia.SocialMedia.Util.AuthenticatedUserUtil;
+import com.SocialMedia.SocialMedia.Util.FileStorageService;
 import com.SocialMedia.SocialMedia.Util.PaginatedResult;
 import com.amazonaws.services.dynamodbv2.datamodeling.QueryResultPage;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import org.apache.coyote.BadRequestException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,13 +34,29 @@ public class PostServiceImpl implements PostService {
     private AuthenticatedUserUtil authUtil;
 
     @Autowired
-    private AuthenticatedUserProvider authenticatedUserProvider;
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @Override
-    public Post addpost(PostDTO postDTO){
+    public PostDTO addpost(PostDTO postDTO) throws IOException {
         String userName= authUtil.getCurrentUser();
         postDTO.setUserName(userName);
-        return postRepo.addPost(postDTO);
+
+        if (postDTO.getPostPath() != null &&  postDTO.getPostName()!=null) {
+            fileStorageService.storePostImage(userName, postDTO.getPostPath(), postDTO.getPostName());
+            postDTO.setPostPath(userName);
+        }
+
+        Post post= modelMapper.map(postDTO, Post.class);
+        postRepo.addPost(post);
+
+        User user= userRepo.getUserByUsername(userName);
+        user.setPostCount(user.getPostCount()+1);
+        userRepo.save(user);
+
+        return postDTO;
     }
 
     //current users posts
@@ -89,13 +110,35 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(PostDTO postDTO){
-        return postRepo.updatePost(postDTO);
+    public PostDTO updatePost(PostDTO postDTO) throws EntityNotFoundException {
+        Post post= postRepo.getPost(postDTO.getPostId());
+
+        if(post==null) throw new EntityNotFoundException("Post not found");
+
+        modelMapper.map(postDTO,post);
+        postRepo.savePost(post);
+
+        return postDTO;
     }
 
     @Override
-    public Post deletePost(String postId){
-        return postRepo.deletePost(postId);
+    public PostDTO deletePost(String postId) throws EntityNotFoundException, BadRequestException {
+        Post post = postRepo.getPost(postId);
+        String userId= authUtil.getCurrentUser();
+
+        if(post==null) throw new EntityNotFoundException("Post not found");
+
+        if(!userId.equals(post.getUserName())) throw new EntityNotFoundException("No such post exists for you");
+
+        postRepo.deletePost(postId);
+
+        User user= userRepo.getUserByUsername(userId);
+
+        user.setPostCount(user.getPostCount()-1);
+
+        PostDTO postDTO= modelMapper.map(post, PostDTO.class);
+
+        return postDTO;
     }
 
 

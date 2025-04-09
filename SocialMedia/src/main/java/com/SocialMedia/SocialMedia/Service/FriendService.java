@@ -2,6 +2,7 @@ package com.SocialMedia.SocialMedia.Service;
 
 import com.SocialMedia.SocialMedia.DTO.FriendDTO;
 import com.SocialMedia.SocialMedia.Entities.Friend;
+import com.SocialMedia.SocialMedia.Exceptions.EntityNotFoundException;
 import com.SocialMedia.SocialMedia.Util.PaginatedResult;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 public interface FriendService {
 
 
-    public Friend unfriend(String friendName);
+    public FriendDTO unfriend(String friendName) throws EntityNotFoundException;
 
     public PaginatedResult<Friend> viewFriends(int limit, String lastEvaluatedKey);
 }

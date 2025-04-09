@@ -2,20 +2,24 @@ package com.SocialMedia.SocialMedia.Service;
 
 import com.SocialMedia.SocialMedia.DTO.PostDTO;
 import com.SocialMedia.SocialMedia.Entities.Post;
+import com.SocialMedia.SocialMedia.Exceptions.EntityNotFoundException;
 import com.SocialMedia.SocialMedia.Util.PaginatedResult;
 import jakarta.validation.constraints.NotNull;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public interface PostService {
-    public Post addpost(PostDTO postDTO);
+    public PostDTO addpost(PostDTO postDTO) throws IOException;
 
     public PaginatedResult<Post> getUserPosts(int limit, String lastEvaluatedKey);
 
     //get posts of a user by username
-    PaginatedResult<Post> getPostsByUserName(String userName, int limit, String lastEvaluatedPostId);
+    public PaginatedResult<Post> getPostsByUserName(String userName, int limit, String lastEvaluatedPostId);
 
-    public Post updatePost(PostDTO postDTO);
+    public PostDTO updatePost(PostDTO postDTO) throws EntityNotFoundException;
 
-    public Post deletePost(String postId);
+    public PostDTO deletePost(String postId) throws EntityNotFoundException, BadRequestException;
 }

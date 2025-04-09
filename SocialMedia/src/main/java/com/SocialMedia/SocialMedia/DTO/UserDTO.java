@@ -27,8 +27,11 @@ public class UserDTO {
     @Size( groups= {OnUpdate.class, OnUpdateBio.class}, max = 500, message = "Bio should not exceed 500 characters")
     private String bio;
 
-    @NotNull(groups = {OnUpdate.class, OnUpdatePfp.class}, message = "Enter a profile pic")
+    @NotBlank(groups = {OnUpdate.class, OnUpdatePfp.class}, message = "Enter a profile pic")
     private String pfpPath;
+
+    @NotBlank(groups = {OnUpdate.class, OnUpdatePfp.class}, message = "Enter pic name")
+    private String pfpName;
 
     @NotNull(groups = OnCreate.class, message = "Age is required")
     @Min(value = 18, message = "Age must be 18 or above")

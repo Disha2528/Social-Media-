@@ -25,6 +25,9 @@ public class Post {
     @DynamoDBAttribute(attributeName = "postPath")
     private String postPath;
 
+    @DynamoDBAttribute(attributeName = "postName")
+    private String postName;
+
     @DynamoDBAttribute(attributeName = "postCaption")
     private String postCaption;
 
@@ -33,9 +36,9 @@ public class Post {
     private LocalDateTime postDate;
 
     @DynamoDBAttribute(attributeName = "likes")
-    private int likes;
+    private Integer likes =0;
 
     @DynamoDBAttribute(attributeName = "comments")
-    private int comments;
+    private Integer comments=0;
 
 }

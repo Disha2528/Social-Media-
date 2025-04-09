@@ -2,7 +2,6 @@ package com.SocialMedia.SocialMedia.Repository;
 
 import com.SocialMedia.SocialMedia.DTO.PostDTO;
 import com.SocialMedia.SocialMedia.Entities.Post;
-import com.SocialMedia.SocialMedia.Entities.User;
 import com.SocialMedia.SocialMedia.Util.AuthenticatedUserUtil;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
@@ -32,11 +31,7 @@ public class PostRepo {
 
     private Map<String, AttributeValue> lastEvaluatedKey;
 
-    public Post addPost(PostDTO postDTO){
-        Post post = modelMapper.map(postDTO, Post.class);
-        User user = userRepo.getUserByUsername(authUtil.getCurrentUser());
-        user.setPostCount(user.getPostCount()+1);
-        dynamoDBMapper.save(user);
+    public Post addPost(Post post){
         dynamoDBMapper.save(post);
         return post;
     }
@@ -60,17 +55,19 @@ public class PostRepo {
         return dynamoDBMapper.queryPage(Post.class, queryExpression);
     }
 
-    public Post updatePost(PostDTO postDTO){
-            Post post= dynamoDBMapper.load(Post.class,postDTO.getPostId());
-            modelMapper.map(postDTO,post);
-            dynamoDBMapper.save(post);
-            return post;
-    }
-
     public Post deletePost(String postId){
             Post post= dynamoDBMapper.load(Post.class,postId);
             dynamoDBMapper.delete(post);
             return post;
+    }
+
+    public Post getPost(String postId){
+        return dynamoDBMapper.load(Post.class,postId);
+    }
+
+    public Post savePost(Post post){
+        dynamoDBMapper.save(post);
+        return post;
     }
 
 }

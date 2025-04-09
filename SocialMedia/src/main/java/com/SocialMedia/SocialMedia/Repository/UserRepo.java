@@ -45,8 +45,7 @@ public class UserRepo {
         return user;
     }
 
-    public User register(UserDTO userDTO) {
-        User user= modelMapper.map(userDTO, User.class);
+    public User save(User user){
         dynamoDBMapper.save(user);
         return user;
     }

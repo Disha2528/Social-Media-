@@ -26,22 +26,10 @@ public class FeedController {
     public ResponseEntity<ResponseHandler> getFriendsPosts(@RequestParam(defaultValue = "5") int limitPerFriend) {
         try {
             List<Post> posts = feedService.getAllFriendsPosts(limitPerFriend);
-            ResponseHandler response = new ResponseHandler(
-                    messageUtil.getMessage("feed.fetch.success"),
-                    HttpStatus.OK.value(),
-                    true,
-                    "Post",
-                    posts
-            );
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("feed.fetch.success"), HttpStatus.OK.value(), true, "Post", posts);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            ResponseHandler response = new ResponseHandler(
-                    e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    false,
-                    "Post",
-                    null
-            );
+            ResponseHandler response = new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Post", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

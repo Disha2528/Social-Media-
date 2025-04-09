@@ -2,6 +2,7 @@ package com.SocialMedia.SocialMedia.Controller;
 
 import com.SocialMedia.SocialMedia.DTO.CommentDTO;
 import com.SocialMedia.SocialMedia.Entities.Comment;
+import com.SocialMedia.SocialMedia.Exceptions.EntityNotFoundException;
 import com.SocialMedia.SocialMedia.Groups.OnCreate;
 import com.SocialMedia.SocialMedia.Groups.OnUpdate;
 import com.SocialMedia.SocialMedia.Service.CommentService;
@@ -25,29 +26,35 @@ public class CommentController {
     @Autowired
     private MessageUtil messageUtil;
 
-
+    //works
     @PostMapping("/addComment")
-    public ResponseEntity<ResponseHandler> addComment(@RequestBody @Validated(OnCreate.class) CommentDTO commentDTO){
+    public ResponseEntity<ResponseHandler> addComment(@RequestBody @Validated(OnCreate.class) CommentDTO commentDTO) {
 
-        try{
-            Comment comment = commentService.addComment(commentDTO);
-            ResponseHandler response= new ResponseHandler(messageUtil.getMessage("comment.add.success"), HttpStatus.OK.value(), true, "Comment",comment);
+        try {
+            CommentDTO comment = commentService.addComment(commentDTO);
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("comment.add.success"), HttpStatus.OK.value(), true, "Comment", comment);
             return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException ex) {
+            ResponseHandler response= new ResponseHandler(ex.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Comment",null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Comment",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-
+    //works
     @DeleteMapping("/deleteComment/{commentId}")
     public ResponseEntity<ResponseHandler> deleteComment(@Valid @PathVariable String commentId){
 
         try{
-            Comment comment = commentService.removeComment(commentId);
+            CommentDTO comment = commentService.removeComment(commentId);
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("comment.delete.success"), HttpStatus.OK.value(), true, "Comment",comment);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        }catch (EntityNotFoundException ex) {
+            ResponseHandler response = new ResponseHandler(ex.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Comment", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }catch (Exception e) {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Comment",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -55,13 +62,16 @@ public class CommentController {
 
 
     @GetMapping("/viewComments/{postId}")
-    public ResponseEntity<ResponseHandler> addComment(@Valid @PathVariable String postId, @RequestParam(defaultValue = "5") int limit, @RequestParam(required = false) String lastEvaluatedKey){
+    public ResponseEntity<ResponseHandler> viewComments(@Valid @PathVariable String postId, @RequestParam(defaultValue = "5") int limit, @RequestParam(required = false) String lastEvaluatedKey){
 
         try{
-            PaginatedResult<Comment> comment = commentService.getComments(postId,limit,lastEvaluatedKey);
+            PaginatedResult<CommentDTO> comment = commentService.getComments(postId,limit,lastEvaluatedKey);
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("comment.get.success"), HttpStatus.OK.value(), true, "Comment",comment);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        }catch (EntityNotFoundException ex) {
+            ResponseHandler response = new ResponseHandler(ex.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Comment", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }catch (Exception e) {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Comment",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -72,10 +82,13 @@ public class CommentController {
     public ResponseEntity<ResponseHandler> updateComment(@RequestBody @Validated(OnUpdate.class)CommentDTO commentDTO){
 
         try{
-            Comment comment = commentService.updateComment(commentDTO);
+            CommentDTO comment = commentService.updateComment(commentDTO);
             ResponseHandler response= new ResponseHandler(messageUtil.getMessage("comment.update.success"), HttpStatus.OK.value(), true, "Comment",comment);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        }catch (EntityNotFoundException ex) {
+            ResponseHandler response = new ResponseHandler(ex.getMessage(), HttpStatus.NOT_FOUND.value(), false, "Comment", null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }catch (Exception e) {
             ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Comment",null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }

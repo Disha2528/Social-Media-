@@ -26,8 +26,7 @@ public class FriendRepo {
     @Autowired
     private AuthenticatedUserUtil authUtil;
 
-    public Friend addFriend(FriendDTO friendDTO){
-        Friend friend = modelMapper.map(friendDTO, Friend.class);
+    public Friend addFriend(Friend friend){
         dynamoDBMapper.save(friend);
         return friend;
     }
@@ -56,6 +55,10 @@ public class FriendRepo {
 
         return  dynamoDBMapper.queryPage(Friend.class,queryExpression);
 
+    }
+
+    public Friend getFriend(String userName, String friendName){
+        return dynamoDBMapper.load(Friend.class, userName, friendName);
     }
 
 
