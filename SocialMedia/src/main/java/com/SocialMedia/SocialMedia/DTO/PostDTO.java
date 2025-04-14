@@ -23,7 +23,7 @@ public class PostDTO {
    @NotBlank(groups = {OnCreate.class}, message = "Post Path needs to be entered")
     private String postPath;
 
-   @NotBlank(groups = {OnCreate.class}, message = "post name is required")
+   @NotBlank(groups = {OnCreate.class,OnCreate.class}, message = "post name is required")
    private String postName;
 
    @NotBlank(groups = {OnUpdate.class}, message = "Caption cannot be blank")
