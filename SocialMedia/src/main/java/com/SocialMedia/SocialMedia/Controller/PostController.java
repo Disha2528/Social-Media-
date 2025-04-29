@@ -88,13 +88,13 @@ public class PostController {
     //works
     @GetMapping("/byUsername/{userName}")
     public ResponseEntity<ResponseHandler> getPostByUserName(@PathVariable @Valid String userName, @RequestParam(defaultValue = "3") int pageSize,
-                                                             @RequestParam(required = false) String lastEvaluatedKey){
-        try{
-            PaginatedResult<Post> posts= postService.getPostsByUserName(userName, pageSize, lastEvaluatedKey);
-            ResponseHandler response= new ResponseHandler(messageUtil.getMessage("post.get.success"), HttpStatus.OK.value(), true, "Post",posts);
+                                                             @RequestParam(required = false) String lastEvaluatedKey) {
+        try {
+            PaginatedResult<Post> posts = postService.getPostsByUserName(userName, pageSize, lastEvaluatedKey);
+            ResponseHandler response = new ResponseHandler(messageUtil.getMessage("post.get.success"), HttpStatus.OK.value(), true, "Post", posts);
             return ResponseEntity.ok(response);
-        }catch (Exception e) {
-            ResponseHandler response= new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Post",null);
+        } catch (Exception e) {
+            ResponseHandler response = new ResponseHandler(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), false, "Post", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
